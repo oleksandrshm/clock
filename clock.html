@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analog Javascript Clock</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+    <div class="clock-container">
+        <div class="clock-face">
+            <div class="num with-numbers">
+                <div class="tick-thick"></div>
+                <div class="tick-text">12</div>
+            </div>
+            <div class="num without-numbers">
+                <div class="tick-thin"></div>
+            </div>
+
+            <!-- Dials -->
+            <div class="top-notch"></div>
+            <div class="hours"></div>
+            <div class="minutes"></div>
+            <div class="seconds">
+                <div class="long-part"></div>
+                <div class="round-part"></div>
+            </div>
+
+        </div>
+        <div class="clock-front"></div>
+    </div>
+    <style>
+        * {
+            margin: 0px;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .clock-container {
+            position: relative;
+            width: 717px;
+            height: 717px;
+            border-radius: 50%;
+            background: #cccccc;
+            overflow: hidden;
+        }
+        
+        .clock-front {
+            position: relative;
+            top: -1050px;
+            left: -525px;
+            width: 1123px;
+            height: 1123px;
+            border-radius: 50%;
+            background: #cccccc;
+        }
+        
+        .clock-face {
+            position: relative;
+            z-index: 2;
+            border-radius: 50%;
+            width: 618px;
+            height: 618px;
+            margin: 49.5px auto;
+            background: #ffffff;
+            box-shadow: inset 0px 0px 25px 30px rgba(0, 0, 0, 0.25);
+        }
+        
+        .num {
+            position: absolute;
+            width: 618px;
+            height: 618px;
+            top: 0px;
+            left: 0px;
+        }
+        
+        .num .tick-text {
+            font-family: 'Roboto', sans-serif;
+            font-weight: normal;
+            font-size: 52.5px;
+            line-height: 52.5px;
+            text-align: center;
+            color: #000000;
+        }
+        
+        .num .tick-thick {
+            width: 7.5px;
+            height: 23.25px;
+            margin: 19px auto 3.75px auto;
+            background: #222222;
+        }
+        
+        .num .tick-thin {
+            width: 3px;
+            height: 12px;
+            margin: 19px auto 3.75px auto;
+            background: #222222;
+        }
+        
+        .top-notch {
+            position: absolute;
+            width: 14.25px;
+            height: 14.25px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background: #222222;
+            z-index: 5;
+        }
+        
+        .hours {
+            position: absolute;
+            top: 50%;
+            left: 44%;
+            transform-origin: 74.3% center;
+            transform: translate(-50%, -50%) rotate(90deg);
+            width: 147.675px;
+            height: 10.125px;
+            background: #222222;
+            border-radius: 13px;
+        }
+        
+        .minutes {
+            position: absolute;
+            top: 50%;
+            left: 38%;
+            transform-origin: 77.4% center;
+            transform: translate(-50%, -50%) rotate(90deg);
+            width: 269.25px;
+            height: 11.25px;
+            background: #222222;
+            border-radius: 13px;
+        }
+        
+        .seconds {
+            position: absolute;
+            top: 50%;
+            left: 42%;
+            transform-origin: 69.4% center;
+            transform: translate(-50%, -50%) rotate(90deg);
+            width: 254.25px;
+            height: 21.75px;
+        }
+        
+        .seconds .long-part {
+            position: absolute;
+            top: 50%;
+            left: 38%;
+            transform: translate(-50%, -50%);
+            width: 269.25px;
+            height: 3.75px;
+            background: #AC0000;
+            border-radius: 13px;
+        }
+        .seconds .round-part {
+            position: absolute;
+            top: 50%;
+            left: 68.5%;
+            transform: translate(-40%, -50%);
+            width: 21.75px;
+            height: 21.75px;
+            background: #AC0000;
+            border-radius: 50%;
+        }
+    </style>
+    <script>
+        let clockFace = document.querySelector(".clock-face"); 
+        let secondsHandle = document.querySelector(".seconds"); 
+        let minutesHandle = document.querySelector(".minutes"); 
+        let hoursHandle = document.querySelector(".hours");
+
+        let timeObj = {
+            hour: 0,
+            minute: 0,
+            second: 0
+        };
+
+        setInterval(function(){
+            getTime();
+
+            secondsHandle.style.transform = `translate(-50%, -50%) rotate(${((timeObj.second/60)*360)+90}deg)`;
+            minutesHandle.style.transform = `translate(-50%, -50%) rotate(${((timeObj.minute/60)*360)+90}deg)`;
+            hoursHandle.style.transform = `translate(-50%, -50%) rotate(${((timeObj.hour/12)*360)+90}deg)`;
+        }, 1000);
+
+        renderClock();
+
+        function renderClock(){
+            let numNode = document.querySelector(".with-numbers");
+            let increments = 30;
+            for(let i=1; i<12 ; i++){
+                let cloneNode = numNode.cloneNode(true);
+                cloneNode.style.transform = `rotate(${increments}deg)`;
+                cloneNode.lastElementChild.innerHTML = i;
+                cloneNode.lastElementChild.style.transform = `rotate(-${increments}deg)`;
+                clockFace.appendChild(cloneNode);
+                increments += 30;
+            }
+
+            let woNumNode = document.querySelector(".without-numbers");
+            increments = 6;
+            for(let i=1; i<60 ; i++){
+                let cloneNode = woNumNode.cloneNode(true);
+                cloneNode.style.transform = `rotate(${increments}deg)`;
+                clockFace.appendChild(cloneNode);
+                increments += 6;
+            }
+        }
+
+        function getTime(){
+            let currTime = new Date();
+            timeObj.second = currTime.getSeconds();
+            timeObj.minute = currTime.getMinutes();
+            timeObj.hour = currTime.getHours();
+        }
+    </script>
+</body>
+</html>
